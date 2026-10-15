@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "database": "crowdwatch.sqlite",
+  "regions": [
+    {
+      "id": "westminster",
+      "name": "Westminster London",
+      "latitude": 51.5007,
+      "longitude": -0.1246,
+      "radius_km": 1.0
+    }
+  ],
+  "sources": [
+    {
+      "id": "tfl",
+      "kind": "tfl",
+      "region_id": "westminster",
+      "quality": 0.9,
+      "ttl_seconds": 600,
+      "interval_seconds": 300,
+      "enabled": false,
+      "attribution": "Transport for London Unified API; line-wide service status",
+      "options": {
+        "line_ids": [
+          "jubilee",
+          "district",
+          "circle"
+        ],
+        "api_key_env": "TFL_APP_KEY"
+      }
+    },
+    {
+      "id": "weather",
+      "kind": "open_meteo",
+      "region_id": "westminster",
+      "quality": 0.8,
+      "ttl_seconds": 1800,
+      "interval_seconds": 900,
+      "attribution": "Open-Meteo modelled current weather; CC BY 4.0 data",
+      "options": {}
+    },
+    {
+      "id": "ticketmaster",
+      "kind": "ticketmaster",
+      "region_id": "westminster",
+      "quality": 0.8,
+      "ttl_seconds": 3600,
+      "interval_seconds": 3600,
+      "enabled": false,
+      "attribution": "Ticketmaster Discovery API; scheduled events, attendance unknown",
+      "options": {
+        "api_key_env": "TICKETMASTER_API_KEY",
+        "max_pages": 3
+      }
+    }
+  ],
+  "analysis": {
+    "horizon_minutes": 15
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "total": 3,
+  "data": {
+    "counters": [
+      {
+        "id": "entrance",
+        "count": 20,
+        "timestamp": "2026-09-01T12:00:00.000000Z",
+        "label": "Historical synthetic fixture",
+        "lat": 51.5,
+        "lon": -0.12
+      },
+      {
+        "id": "entrance",
+        "count": 21,
+        "timestamp": "2026-09-01T12:05:00.000000Z",
+        "label": "Historical synthetic fixture",
+        "lat": 51.5,
+        "lon": -0.12
+      },
+      {
+        "id": "entrance",
+        "count": 22,
+        "timestamp": "2026-09-01T12:10:00.000000Z",
+        "label": "Historical synthetic fixture",
+        "lat": 51.5,
+        "lon": -0.12
+      }
+    ]
+  }
+}

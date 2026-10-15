@@ -1,0 +1,38 @@
+[
+  {
+    "source_id": "citibike",
+    "status": "ok",
+    "last_attempt": "2026-10-01T08:29:12.300065Z",
+    "last_success": "2026-10-01T08:29:12.300065Z",
+    "next_due": "2026-10-01T08:34:12.300065Z",
+    "failures": 0,
+    "records": 76,
+    "error": "",
+    "warnings": []
+  },
+  {
+    "source_id": "melbourne-footfall",
+    "status": "partial",
+    "last_attempt": "2026-10-01T08:26:33.499289Z",
+    "last_success": "2026-10-01T08:26:33.499289Z",
+    "next_due": "2026-10-01T08:31:33.499289Z",
+    "failures": 0,
+    "records": 300,
+    "error": "",
+    "warnings": [
+      "All returned pedestrian readings are stale; current crowd conditions remain unknown.",
+      "Melbourne history page cap reached; only the newest bounded slice was collected."
+    ]
+  },
+  {
+    "source_id": "weather",
+    "status": "ok",
+    "last_attempt": "2026-10-01T08:26:33.499289Z",
+    "last_success": "2026-10-01T08:26:33.499289Z",
+    "next_due": "2026-10-01T08:41:33.499289Z",
+    "failures": 0,
+    "records": 3,
+    "error": "",
+    "warnings": []
+  }
+]

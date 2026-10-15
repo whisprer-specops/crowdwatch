@@ -1,0 +1,207 @@
+# Copyright (C) 2026 whispr.dev
+# SPDX-License-Identifier: GPL-3.0-only
+#
+# Builds, checks and packs the program on Windows, Linux (x86_64 and ARM64) and macOS (one program for Apple
+# silicon and Intel), then publishes a GitHub release with every download and SHA256SUMS.txt.
+#
+# Pushing a tag such as v1.0.1 runs the whole thing; the tag must match the version in Cargo.toml. Running it
+# by hand from the Actions tab ("Run workflow") builds and packs without publishing: the files appear under
+# that run's Artifacts. It runs only in a public repository, where every runner used here is free.
+# packaging/package.py does the building and packing; packaging/product.json names the program.
+
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: Build ${{ matrix.platform }}
+    if: ${{ !github.event.repository.private }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - platform: windows-x86_64
+            os: windows-2025
+            python: python
+            targets: x86_64-pc-windows-msvc
+          - platform: linux-x86_64
+            os: ubuntu-24.04
+            python: python3
+            targets: x86_64-unknown-linux-musl
+          - platform: linux-aarch64
+            os: ubuntu-24.04-arm
+            python: python3
+            targets: aarch64-unknown-linux-musl
+          - platform: macos-universal
+            os: macos-15
+            python: python3
+            targets: aarch64-apple-darwin x86_64-apple-darwin
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Read the product details
+        run: |
+          ${{ matrix.python }} packaging/package.py env >> "$GITHUB_ENV"
+          ${{ matrix.python }} packaging/package.py env
+
+      - name: Check the tag matches the version
+        if: ${{ github.ref_type == 'tag' }}
+        run: |
+          if [ "$GITHUB_REF_NAME" != "v$VERSION" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match version $VERSION in Cargo.toml." >&2
+            exit 1
+          fi
+
+      - name: Install the pinned Rust toolchain and targets
+        working-directory: ${{ env.CRATE_DIR }}
+        run: |
+          if ! command -v rustup > /dev/null 2>&1; then
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain none
+            echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+            export PATH="$HOME/.cargo/bin:$PATH"
+          fi
+          channel=$(tr -d '\r' < rust-toolchain.toml | sed -n 's/^channel *= *"\(.*\)"/\1/p')
+          rustup toolchain install "$channel" --profile minimal --component clippy --component rustfmt
+          for target in ${{ matrix.targets }}; do
+            rustup target add --toolchain "$channel" "$target"
+          done
+          rustc --version
+          cargo --version
+
+      - name: Install the C compilers
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends build-essential musl-tools
+
+      - name: Run the checks (Windows)
+        if: ${{ runner.os == 'Windows' }}
+        working-directory: ${{ env.CRATE_DIR }}
+        shell: pwsh
+        run: |
+          $product = Get-Content -Raw (Join-Path $env:GITHUB_WORKSPACE 'packaging/product.json') | ConvertFrom-Json
+          powershell -NoProfile -ExecutionPolicy Bypass -File $product.check_windows
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Run the checks (Linux, macOS)
+        if: ${{ runner.os != 'Windows' }}
+        working-directory: ${{ env.CRATE_DIR }}
+        run: |
+          check=$(${{ matrix.python }} -c "import json,sys; print(json.load(open(sys.argv[1]))['check_unix'])" "$GITHUB_WORKSPACE/packaging/product.json")
+          bash "$check"
+
+      - name: Build the release program
+        run: ${{ matrix.python }} packaging/package.py build --platform ${{ matrix.platform }}
+
+      - name: Get makeself
+        if: ${{ runner.os != 'Windows' }}
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/makeself.run" \
+            https://github.com/megastep/makeself/releases/download/release-2.7.1/makeself-2.7.1.run
+          echo "42f51a114ff671623e689ac4b74c444e9fc5bf8906dd88c82dc9e04e0b3938d1  $RUNNER_TEMP/makeself.run" \
+            | shasum -a 256 -c -
+          sh "$RUNNER_TEMP/makeself.run" --target "$RUNNER_TEMP/makeself" > /dev/null
+          echo "MAKESELF=$RUNNER_TEMP/makeself/makeself.sh" >> "$GITHUB_ENV"
+
+      - name: Get Inno Setup
+        if: ${{ runner.os == 'Windows' }}
+        shell: pwsh
+        run: |
+          $setup = Join-Path $env:RUNNER_TEMP 'innosetup.exe'
+          Invoke-WebRequest -Uri 'https://github.com/jrsoftware/issrc/releases/download/is-6_5_4/innosetup-6.5.4.exe' -OutFile $setup
+          $hash = (Get-FileHash $setup -Algorithm SHA256).Hash
+          if ($hash -ne 'fa73bf47a4da250d185d07561c2bfda387e5e20db77e4570004cf6a133cc10b1') {
+            throw "Inno Setup download does not match its checksum: $hash"
+          }
+          $dir = Join-Path $env:RUNNER_TEMP 'inno'
+          Start-Process -FilePath $setup -ArgumentList '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', '/SP-', "/DIR=$dir" -Wait
+          $iscc = Join-Path $dir 'ISCC.exe'
+          if (-not (Test-Path $iscc)) { throw "ISCC.exe is missing from $dir" }
+          "ISCC=$iscc" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+      - name: Pack the downloads
+        run: ${{ matrix.python }} packaging/package.py pack --platform ${{ matrix.platform }}
+
+      - name: Try the installer (Linux, macOS)
+        if: ${{ runner.os != 'Windows' }}
+        run: |
+          for installer in dist/out/*.run; do break; done
+          sh "$installer" --accept -- "$RUNNER_TEMP/try-install"
+          "$RUNNER_TEMP/try-install/$BINARY" --version
+
+      - name: Try the installer (Windows)
+        if: ${{ runner.os == 'Windows' }}
+        shell: pwsh
+        run: |
+          $installer = Get-ChildItem dist/out/*-setup.exe | Select-Object -First 1
+          $dir = Join-Path $env:RUNNER_TEMP 'try-install'
+          Start-Process -FilePath $installer.FullName -ArgumentList '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', "/DIR=$dir" -Wait
+          & (Join-Path $dir "$env:BINARY.exe") --version
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Keep the downloads
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ${{ matrix.platform }}
+          path: dist/out/*
+          if-no-files-found: error
+          retention-days: 14
+
+  release:
+    name: Publish the release
+    needs: build
+    if: ${{ github.ref_type == 'tag' && !github.event.repository.private }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Collect the downloads
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          path: dist/out
+          merge-multiple: true
+
+      - name: Write the checksums and notes
+        run: |
+          python3 packaging/package.py env >> "$GITHUB_ENV"
+          python3 packaging/package.py release-files --tag "$GITHUB_REF_NAME"
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" dist/out/* --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" dist/out/* --verify-tag \
+              --title "$NAME $VERSION" --notes-file dist/notes.md
+          fi

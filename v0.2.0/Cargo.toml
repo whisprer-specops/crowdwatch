@@ -1,0 +1,28 @@
+[package]
+name = "crowdwatch"
+version = "0.2.0"
+edition = "2021"
+rust-version = "1.87"
+description = "Aggregate movement observatory with a SkeleTrace import adapter"
+authors = ["whispr.dev"]
+# GPL-3.0-only, as in the repository's LICENSE and the SPDX line atop every code file.
+license = "GPL-3.0-only"
+repository = "https://github.com/whisprer-specops/crowdwatch"
+readme = "README.md"
+default-run = "crowdwatch"
+
+# Every dependency below, at exactly this version, is already in SkeleTrace's Cargo.lock,
+# so the whole tree is one already built and vetted on this machine.
+[dependencies]
+rusqlite = { version = "=0.31.0", features = ["bundled"] }
+ureq = { version = "=2.12.1", default-features = false, features = ["tls", "socks-proxy"] }
+uuid = { version = "=1.22.0", features = ["v4", "v5"] }
+ring = "=0.17.14"
+icu_normalizer = { version = "=2.1.1", default-features = false, features = ["compiled_data"] }
+idna = "=1.1.0"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = 3
+strip = true

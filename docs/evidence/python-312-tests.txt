@@ -1,0 +1,56 @@
+test_backtest_cannot_use_late_backfill (tests.test_contracts.AnalysisTests.test_backtest_cannot_use_late_backfill) ... ok
+test_conservation_projection (tests.test_contracts.AnalysisTests.test_conservation_projection) ... ok
+test_context_only_remains_unknown (tests.test_contracts.AnalysisTests.test_context_only_remains_unknown) ... ok
+test_correlated_copies_cannot_corroborate (tests.test_contracts.AnalysisTests.test_correlated_copies_cannot_corroborate) ... ok
+test_disabled_source_excluded (tests.test_contracts.AnalysisTests.test_disabled_source_excluded) ... ok
+test_forecast_suppressed_across_gap (tests.test_contracts.AnalysisTests.test_forecast_suppressed_across_gap) ... ok
+test_linear_projection_and_horizon_bound (tests.test_contracts.AnalysisTests.test_linear_projection_and_horizon_bound) ... ok
+test_low_quality_does_not_drive_alert (tests.test_contracts.AnalysisTests.test_low_quality_does_not_drive_alert) ... ok
+test_missing_readings_are_not_zero (tests.test_contracts.AnalysisTests.test_missing_readings_are_not_zero) ... ok
+test_recent_anomaly_is_excluded_from_baseline (tests.test_contracts.AnalysisTests.test_recent_anomaly_is_excluded_from_baseline) ... ok
+test_single_spike_watch_then_sustained_elevated (tests.test_contracts.AnalysisTests.test_single_spike_watch_then_sustained_elevated) ... ok
+test_stale_data_is_excluded (tests.test_contracts.AnalysisTests.test_stale_data_is_excluded) ... ok
+test_ttl_config_caps_feed_claims (tests.test_contracts.AnalysisTests.test_ttl_config_caps_feed_claims) ... ok
+test_zero_variance_baseline_is_finite (tests.test_contracts.AnalysisTests.test_zero_variance_baseline_is_finite) ... ok
+test_demo_is_complete_and_labelled (tests.test_contracts.ExportTests.test_demo_is_complete_and_labelled) ... ok
+test_geojson_coordinate_order (tests.test_contracts.ExportTests.test_geojson_coordinate_order) ... ok
+test_html_injection_escaped (tests.test_contracts.ExportTests.test_html_injection_escaped) ... ok
+test_native_missing_is_not_numeric_zero (tests.test_contracts.ExportTests.test_native_missing_is_not_numeric_zero) ... ok
+test_native_serialization_matches_checked_rust_shapes (tests.test_contracts.ExportTests.test_native_serialization_matches_checked_rust_shapes) ... ok
+test_geohash_reference_vector (tests.test_contracts.HttpTests.test_geohash_reference_vector) ... ok
+test_rejects_private_or_credential_urls (tests.test_contracts.HttpTests.test_rejects_private_or_credential_urls) ... ok
+test_canonical_jsonl_and_csv (tests.test_contracts.ModelTests.test_canonical_jsonl_and_csv) ... ok
+test_capacity_requires_exact_occupancy_stream (tests.test_contracts.ModelTests.test_capacity_requires_exact_occupancy_stream) ... ok
+test_config_rejects_bad_shapes (tests.test_contracts.ModelTests.test_config_rejects_bad_shapes) ... ok
+test_equivalent_csv_json_numbers_do_not_create_revisions (tests.test_contracts.ModelTests.test_equivalent_csv_json_numbers_do_not_create_revisions) ... ok
+test_explicit_zero_is_retained (tests.test_contracts.ModelTests.test_explicit_zero_is_retained) ... ok
+test_json_rejects_duplicate_keys_and_nan (tests.test_contracts.ModelTests.test_json_rejects_duplicate_keys_and_nan) ... ok
+test_rejects_future_observation (tests.test_contracts.ModelTests.test_rejects_future_observation) ... ok
+test_rejects_invalid_values_and_units (tests.test_contracts.ModelTests.test_rejects_invalid_values_and_units) ... ok
+test_utc_normalization (tests.test_contracts.ModelTests.test_utc_normalization) ... ok
+test_correction_can_revert_to_an_earlier_value (tests.test_contracts.StoreTests.test_correction_can_revert_to_an_earlier_value) ... ok
+test_corrections_do_not_leak_backwards (tests.test_contracts.StoreTests.test_corrections_do_not_leak_backwards) ... ok
+test_failed_batch_is_atomic (tests.test_contracts.StoreTests.test_failed_batch_is_atomic) ... ok
+test_ingestion_idempotent (tests.test_contracts.StoreTests.test_ingestion_idempotent) ... ok
+test_old_database_migrates_without_losing_history (tests.test_contracts.StoreTests.test_old_database_migrates_without_losing_history) ... ok
+test_repeated_and_concurrent_claims (tests.test_contracts.StoreTests.test_repeated_and_concurrent_claims) ... ok
+test_retry_after_is_respected (tests.test_contracts.StoreTests.test_retry_after_is_respected) ... ok
+test_same_metric_with_different_interval_is_distinct (tests.test_contracts.StoreTests.test_same_metric_with_different_interval_is_distinct) ... ok
+test_source_failure_preserves_existing_data (tests.test_contracts.StoreTests.test_source_failure_preserves_existing_data) ... ok
+test_canonical_network_source_cannot_claim_early_availability (tests.test_sources.SourceTests.test_canonical_network_source_cannot_claim_early_availability) ... ok
+test_failed_source_does_not_stop_next_source (tests.test_sources.SourceTests.test_failed_source_does_not_stop_next_source) ... ok
+test_gbfs_v2_and_v3 (tests.test_sources.SourceTests.test_gbfs_v2_and_v3) ... ok
+test_mapped_json_uses_explicit_timestamp (tests.test_sources.SourceTests.test_mapped_json_uses_explicit_timestamp) ... ok
+test_melbourne_join_filters_area_and_paginates (tests.test_sources.SourceTests.test_melbourne_join_filters_area_and_paginates) ... ok
+test_missing_api_key_is_explicit (tests.test_sources.SourceTests.test_missing_api_key_is_explicit) ... ok
+test_open_meteo_values_units_and_model_label (tests.test_sources.SourceTests.test_open_meteo_values_units_and_model_label) ... ok
+test_rss_keeps_reporting_separate (tests.test_sources.SourceTests.test_rss_keeps_reporting_separate) ... ok
+test_rss_rejects_entities (tests.test_sources.SourceTests.test_rss_rejects_entities) ... ok
+test_tfl_status_uses_explicit_lines (tests.test_sources.SourceTests.test_tfl_status_uses_explicit_lines) ... ok
+test_ticketmaster_geohash_time_and_auth_redaction (tests.test_sources.SourceTests.test_ticketmaster_geohash_time_and_auth_redaction) ... ok
+test_unknown_tfl_status_not_invented (tests.test_sources.SourceTests.test_unknown_tfl_status_not_invented) ... ok
+
+----------------------------------------------------------------------
+Ran 51 tests in 1.281s
+
+OK

@@ -1,0 +1,4 @@
+source_id,stream_id,region_id,metric,value,unit,observed_at,retrieved_at,valid_until,period_seconds,quality,provenance_url,label,latitude,longitude,details
+sample-counter,entrance,sample-area,footfall,20,people/interval,2026-09-01T12:00:00.000000Z,2026-09-01T12:00:00.000000Z,2026-09-01T12:15:00.000000Z,300,1.0,,Synthetic entrance passages,,,"{""synthetic"": true}"
+sample-counter,entrance,sample-area,footfall,21,people/interval,2026-09-01T12:05:00.000000Z,2026-09-01T12:05:00.000000Z,2026-09-01T12:20:00.000000Z,300,1.0,,Synthetic entrance passages,,,"{""synthetic"": true}"
+sample-counter,entrance,sample-area,footfall,22,people/interval,2026-09-01T12:10:00.000000Z,2026-09-01T12:10:00.000000Z,2026-09-01T12:25:00.000000Z,300,1.0,,Synthetic entrance passages,,,"{""synthetic"": true}"

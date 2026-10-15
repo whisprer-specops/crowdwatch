@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "database": "crowdwatch.sqlite",
+  "regions": [
+    {
+      "id": "melbourne-central",
+      "name": "Melbourne Central",
+      "latitude": -37.81101524,
+      "longitude": 144.96429485,
+      "radius_km": 0.8
+    }
+  ],
+  "sources": [
+    {
+      "id": "melbourne-footfall",
+      "kind": "melbourne",
+      "region_id": "melbourne-central",
+      "quality": 0.85,
+      "ttl_seconds": 600,
+      "interval_seconds": 300,
+      "attribution": "City of Melbourne Open Data pedestrian counting system",
+      "options": {
+        "sensor_ids": [
+          3
+        ],
+        "max_pages": 3
+      }
+    },
+    {
+      "id": "weather",
+      "kind": "open_meteo",
+      "region_id": "melbourne-central",
+      "quality": 0.8,
+      "ttl_seconds": 1800,
+      "interval_seconds": 900,
+      "attribution": "Open-Meteo modelled current weather; CC BY 4.0 data",
+      "options": {}
+    },
+    {
+      "id": "ticketmaster",
+      "kind": "ticketmaster",
+      "region_id": "melbourne-central",
+      "quality": 0.8,
+      "ttl_seconds": 3600,
+      "interval_seconds": 3600,
+      "enabled": false,
+      "attribution": "Ticketmaster Discovery API; scheduled events, attendance unknown",
+      "options": {
+        "api_key_env": "TICKETMASTER_API_KEY",
+        "max_pages": 3
+      }
+    }
+  ],
+  "analysis": {
+    "horizon_minutes": 15
+  }
+}

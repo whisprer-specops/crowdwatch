@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "database": "crowdwatch.sqlite",
+  "regions": [
+    {
+      "id": "midtown",
+      "name": "Midtown New York",
+      "latitude": 40.7549,
+      "longitude": -73.984,
+      "radius_km": 0.8
+    }
+  ],
+  "sources": [
+    {
+      "id": "citibike",
+      "kind": "gbfs",
+      "region_id": "midtown",
+      "quality": 0.8,
+      "ttl_seconds": 600,
+      "interval_seconds": 300,
+      "attribution": "Citi Bike GBFS; shared-bike inventory",
+      "options": {
+        "station_information_url": "https://gbfs.citibikenyc.com/gbfs/en/station_information.json",
+        "station_status_url": "https://gbfs.citibikenyc.com/gbfs/en/station_status.json"
+      }
+    },
+    {
+      "id": "weather",
+      "kind": "open_meteo",
+      "region_id": "midtown",
+      "quality": 0.8,
+      "ttl_seconds": 1800,
+      "interval_seconds": 900,
+      "attribution": "Open-Meteo modelled current weather; CC BY 4.0 data",
+      "options": {}
+    },
+    {
+      "id": "ticketmaster",
+      "kind": "ticketmaster",
+      "region_id": "midtown",
+      "quality": 0.8,
+      "ttl_seconds": 3600,
+      "interval_seconds": 3600,
+      "enabled": false,
+      "attribution": "Ticketmaster Discovery API; scheduled events, attendance unknown",
+      "options": {
+        "api_key_env": "TICKETMASTER_API_KEY",
+        "max_pages": 3
+      }
+    }
+  ],
+  "analysis": {
+    "horizon_minutes": 15
+  }
+}

@@ -1,0 +1,5 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Shell scripts keep LF line endings so bash can run them on any checkout.
+*.sh text eol=lf

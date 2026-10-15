@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CrowdWatch configuration v1",
+  "description": "Runtime validation additionally enforces unique IDs and source/region references; provider options are validated by collectors.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "regions"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "database": {
+      "type": "string",
+      "minLength": 1,
+      "default": "crowdwatch.sqlite"
+    },
+    "regions": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "latitude",
+          "longitude",
+          "radius_km"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:-]{0,127}$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": ".*\\S.*"
+          },
+          "latitude": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "longitude": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "radius_km": {
+            "type": "number",
+            "minimum": 0.01,
+            "maximum": 100
+          },
+          "capacity_people": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100000000.0
+          },
+          "occupancy_stream": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:-]{0,127}/[a-zA-Z0-9][a-zA-Z0-9_.:-]{0,127}$"
+          },
+          "balance": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "occupancy",
+              "inflow",
+              "outflow"
+            ],
+            "properties": {
+              "occupancy": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:-]{0,127}/[a-zA-Z0-9][a-zA-Z0-9_.:-]{0,127}$"
+              },
+              "inflow": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:-]{0,127}/[a-zA-Z0-9][a-zA-Z0-9_.:-]{0,127}$"
+              },
+              "outflow": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:-]{0,127}/[a-zA-Z0-9][a-zA-Z0-9_.:-]{0,127}$"
+              }
+            }
+          }
+        },
+        "dependentRequired": {
+          "capacity_people": [
+            "occupancy_stream"
+          ]
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "maxItems": 128,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "region_id",
+          "attribution"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:-]{0,127}$"
+          },
+          "kind": {
+            "enum": [
+              "canonical_csv",
+              "canonical_json",
+              "gbfs",
+              "mapped_json",
+              "melbourne",
+              "open_meteo",
+              "rss",
+              "tfl",
+              "ticketmaster"
+            ]
+          },
+          "region_id": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:-]{0,127}$"
+          },
+          "attribution": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": ".*\\S.*"
+          },
+          "enabled": {
+            "type": "boolean",
+            "default": true
+          },
+          "interval_seconds": {
+            "type": "number",
+            "minimum": 60,
+            "maximum": 86400,
+            "default": 300
+          },
+          "ttl_seconds": {
+            "type": "number",
+            "minimum": 30,
+            "maximum": 604800,
+            "default": 900
+          },
+          "quality": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "default": 0.8
+          },
+          "independence_group": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:-]{0,127}$"
+          },
+          "options": {
+            "type": "object",
+            "description": "Provider-specific options; see docs/SOURCES.md. Collector validates these at collection time.",
+            "default": {}
+          }
+        }
+      },
+      "default": []
+    },
+    "analysis": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "history_days": {
+          "type": "number",
+          "minimum": 2,
+          "maximum": 90,
+          "default": 28
+        },
+        "minimum_baseline": {
+          "type": "number",
+          "minimum": 4,
+          "maximum": 500,
+          "default": 8
+        },
+        "z_threshold": {
+          "type": "number",
+          "minimum": 2,
+          "maximum": 10,
+          "default": 3
+        },
+        "horizon_minutes": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 30,
+          "default": 15
+        },
+        "minimum_quality": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0.5
+        }
+      }
+    }
+  }
+}

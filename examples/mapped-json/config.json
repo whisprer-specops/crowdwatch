@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "database": "crowdwatch.sqlite",
+  "regions": [
+    {
+      "id": "sample-area",
+      "name": "Historical synthetic counter example",
+      "latitude": 51.5,
+      "longitude": -0.12,
+      "radius_km": 0.5
+    }
+  ],
+  "sources": [
+    {
+      "id": "sample-counter",
+      "kind": "mapped_json",
+      "region_id": "sample-area",
+      "attribution": "Invented example for contract demonstration",
+      "independence_group": "sample-counter",
+      "ttl_seconds": 900,
+      "options": {
+        "path": "counters.json",
+        "items_pointer": "/data/counters",
+        "total_pointer": "/total",
+        "metric": "footfall",
+        "period_seconds": 300,
+        "fields": {
+          "stream_id": "/id",
+          "value": "/count",
+          "observed_at": "/timestamp",
+          "label": "/label",
+          "latitude": "/lat",
+          "longitude": "/lon"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "CrowdWatch",
+  "edition": "Community",
+  "binary": "crowdwatch",
+  "crate_dir": "v0.2.0",
+  "url": "https://github.com/whisprer-specops/crowdwatch",
+  "download_page": "https://github.com/whisprer-specops/crowdwatch/releases/latest",
+  "docs": [
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "check_unix": "scripts/check.sh",
+  "check_windows": "scripts/check.ps1",
+  "repository": "https://github.com/whisprer-specops/crowdwatch"
+}
