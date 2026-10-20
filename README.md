@@ -10,6 +10,8 @@ It does not claim to predict a psychological "behavioural sink", crowd injury or
 
 Copyright (C) 2026 whispr.dev. CrowdWatch is free software under the GNU General Public License, version 3 only (`LICENSE`), with no warranty.
 
+**New here?** Start with the [quickstart guide](docs/quickstart/QUICKSTART.md): a plain-English tour with pictures, from installing to your first results. It's also a [PDF](docs/quickstart/crowdwatch-quickstart.pdf) to keep or print.
+
 ## Download
 
 Ready-built programs for Windows, macOS and Linux are on the [Releases page](https://github.com/whisprer-specops/crowdwatch/releases/latest). These links always give the newest release:
